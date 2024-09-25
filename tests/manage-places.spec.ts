@@ -49,3 +49,18 @@ test("should allow user to add a place", async ({ page }) => {
   await page.getByRole("button", { name: "Save" }).click();
   await expect(page.getByText("Place saved")).toBeVisible();
 });
+
+test("should display places", async ({ page }) => {
+  await page.goto(`${UI_URL}/my-places`);
+
+  await expect(page.getByText("Banjul HAFH")).toBeVisible();
+  await expect(page.getByText("Just texting")).toBeVisible();
+  await expect(page.getByText("Banjul, Gambia")).toBeVisible();
+  await expect(page.getByText("Penthouse")).toBeVisible();
+  await expect(page.getByText("£90 per night")).toBeVisible();
+  await expect(page.getByText("2 adults, 8 children")).toBeVisible();
+  await expect(page.getByText("5 Star rating")).toBeVisible();
+
+  await expect(page.getByRole("link", { name: "View details" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Add Place" })).toBeVisible();
+});
