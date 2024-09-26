@@ -56,11 +56,36 @@ test("should display places", async ({ page }) => {
   await expect(page.getByText("Banjul HAFH")).toBeVisible();
   await expect(page.getByText("Just texting")).toBeVisible();
   await expect(page.getByText("Banjul, Gambia")).toBeVisible();
-  await expect(page.getByText("Penthouse")).toBeVisible();
+  await expect(page.getByText("Penthouse").first()).toBeVisible();
   await expect(page.getByText("£90 per night")).toBeVisible();
   await expect(page.getByText("2 adults, 8 children")).toBeVisible();
   await expect(page.getByText("5 Star rating")).toBeVisible();
 
-  await expect(page.getByRole("link", { name: "View details" })).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "View details" }).first()
+  ).toBeVisible();
   await expect(page.getByRole("link", { name: "Add Place" })).toBeVisible();
+});
+
+test("should edit hotel", async ({ page }) => {
+  await page.goto(`${UI_URL}/my-places`);
+
+  await page.getByRole("link", { name: "View details" }).first().click();
+
+  await page.waitForSelector('[name="name"]', { state: "attached" });
+  await expect(page.locator('[name="name"]')).toHaveValue(
+    "Banjul HAFH CHANGED"
+  );
+  await page.locator('[name="name"]').fill("Banjul HAFH");
+
+  await page.getByRole("button", { name: "Save" }).click();
+
+  await expect(page.getByText("Place saved")).toBeVisible();
+
+  await page.reload();
+
+  //reset back to original for future test
+  await expect(page.locator('[name="name"]')).toHaveValue("Banjul HAFH");
+  await page.locator('[name="name"]').fill("Banjul HAFH CHANGED");
+  await page.getByRole("button", { name: "Save" }).click();
 });
